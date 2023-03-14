@@ -1,0 +1,1 @@
+{"resultCode":0,"resultMsg":"NORMAL SERVICE.","totalCount":1,"items":[{"company":"\uC8FC\uC2DD\uD68C\uC0AC \uB9AC\uADF8\uB77C\uC6B4\uB4DC","bno":"104-86-53569","cno":"110111-5337765","bsttcd":"","bstt":"","TaxTypeCd":"","taxtype":"","EndDt":""}]}

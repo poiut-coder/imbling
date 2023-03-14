@@ -1,0 +1,13 @@
+package com.imbling;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class ImblingApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}

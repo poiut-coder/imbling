@@ -1,0 +1,9 @@
+/**
+ * 
+ */
+/**
+ * @author sulim
+ *
+ */
+module database {
+}

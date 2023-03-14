@@ -1,0 +1,40 @@
+picture = request.files['picture']
+    # picture.save(picture.filename)
+
+    mnist_data = np.frombuffer(picture.read(), np.uint8)  # 파일 데이터 -> numpy array
+    img = cv2.imdecode( mnist_data, cv2.IMREAD_GRAYSCALE)   # numpy array -> image formatted numpy array
+    _, bin_img = cv2.threshold(img, 127, 256, cv2.THRESH_BINARY_INV)
+
+    # cv2.imwrite("number3.png", bin_img)
+
+    contours, hierarchy = cv2.findContours(bin_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    print("----------------------->{0}".format(len(contours)))
+
+    if len(contours) == 0:
+        return "no number detected 1"
+    else:
+        (x, y), radius = cv2.minEnclosingCircle(contours[0]) # 각 점을 모두 포함하는 가장 작은 원 정보 반환 
+        print("=======================>{0}".format(radius))
+        if radius > 5:
+            xs, xe = int(x - radius), int(x + radius)
+            ys, ye = int(y - radius), int(y + radius)            
+
+            r_img = bin_img[ys:ye, xs:xe] # 사각형 이미지 추출
+            print("-------------------------------->{0}".format(r_img.shape))
+            scaled_img = cv2.resize(r_img, dsize=(50,50), interpolation=cv2.INTER_AREA)
+            scaled_img = cv2.resize(scaled_img, dsize=(26,26), interpolation=cv2.INTER_AREA)
+
+            input_img = np.zeros((28, 28)) # 빈 사각형 이미지 만들기
+            input_img[1:-1, 1:-1] = scaled_img[:, :] # 경계선 1을 제외한 나머지 영역을 위에서 검출한 이미지로 대체
+            cv2.imwrite("number2.png", input_img)
+
+            input_img = input_img.reshape(-1, 28, 28, 1) # 모델의 입력 포맷으로 변환
+
+            mnist_model = keras.models.load_model(filepath="model/mnist_model.h5")
+            predicted_value = mnist_model.predict(input_img)
+            selected_number = np.argmax(predicted_value)
+
+            return "NUMBER IN IMAGE IS {0}".format(selected_number) 
+        else:
+            return "no number detected 2"
